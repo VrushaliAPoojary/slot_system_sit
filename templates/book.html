@@ -1,0 +1,97 @@
+{% extends "sample-inner-page.html" %}
+{% load static %}
+    {% block body %}
+  <div class="page-header d-flex align-items-center">
+    <div class="container position-relative">
+      <div class="row d-flex justify-content-center">
+        <div class="col-lg-6 text-center">
+          <h2>Contact</h2>
+          <p>Feel free to reach out via email or phone for assistance with hall bookings, or use our feedback form for inquiries, and don't forget to check our FAQs for quick answers</p>
+
+        </div>
+      </div>
+    </div>
+  </div><!-- End Page Header -->
+
+  <!-- ======= Contact Section ======= -->
+  <section id="contact" class="contact">
+    <div class="container">
+
+      <div class="row gy-4 justify-content-center">
+
+        <div class="col-lg-3">
+          <div class="info-item d-flex">
+            <i class="bi bi-geo-alt flex-shrink-0"></i>
+            <div>
+              <h4>Location:</h4>
+              <p>Merlapadavu, Arkula, via, Valachil, Mangaluru, Karnataka 574143</p>
+            </div>
+          </div>
+        </div><!-- End Info Item -->
+
+        <div class="col-lg-3">
+          <div class="info-item d-flex">
+            <i class="bi bi-envelope flex-shrink-0"></i>
+            <div>
+              <h4>Email:</h4>
+              <p>info@example.com</p>
+            </div>
+          </div>
+        </div><!-- End Info Item -->
+
+        <div class="col-lg-3">
+          <div class="info-item d-flex">
+            <i class="bi bi-phone flex-shrink-0"></i>
+            <div>
+              <h4>Call:</h4>
+              <p>+1 5589 55488 55</p>
+            </div>
+          </div>
+        </div><!-- End Info Item -->
+
+      </div>
+
+      <div class="row justify-content-center mt-4">
+
+        <div class="col-lg-9">
+          <form action="book" method="post" role="form" class="php-email-form">
+            {% csrf_token %}
+            <div>
+              <div class="col-md-6 form-group">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Event Name" required>
+              </div>
+              <div class="col-md-7 form-group mt-3 mt-md-0">
+                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+              </div>
+              <div class="col-md-8 form-group mt-3 mt-md-0">
+                <input type="date" class="form-control" name="date" id="date" placeholder="date" >
+              </div>
+              <div class="col-md-8 form-group mt-3 mt-md-0">
+                <input type="time" class="form-control" name="time" id="time" placeholder="time" >
+              </div>
+              
+              <div class="col-md-8 form-group mt-3 mt-md-0">
+                <input type="duration" class="form-control" name="duration" id="duration" placeholder="duration of program" >
+              </div>
+              <div class="col-md-8 form-group mt-3 mt-md-0">
+                <label for="photo">Select a photo:</label>
+                <input type="file" id="photo" name="photo" accept="image/*">
+          </div>
+            </div>
+            <div class="my-3">
+              <div class="loading">Loading</div>
+              <div class="error-message">there is error please contact</div>
+              <div class="sent-message">Your message has been sent. Thank you!</div>
+            </div>
+            <div class="text-center"><button type="submit">Send Message</button></div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section><!-- End Contact Section -->
+
+</main><!-- End #main -->
+  {% endblock body %}
+ 
