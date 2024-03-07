@@ -4,14 +4,15 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
 import re
-from .models import Event
+from .models import Event, places
 from datetime import datetime, timedelta
 from django.core.paginator import Paginator
 from django.utils import timezone
 
 
 def index(request):
-    return render(request, 'index.html')
+    place = places.objects.all().order_by('id')
+    return render(request, 'index.html',{'place': place})
 
 def contact(request):
     return render(request, 'contact.html')
@@ -19,8 +20,14 @@ def contact(request):
 def success(request):
     return render(request, 'event.html')
 
-def book(request):
+def book(request, place_id):
+    place_id = place_id
+    return render(request, 'book.html',{'place_id':place_id})
+
+def bookslot(request): 
     if request.method == 'POST':
+        place_id = request.Post.get('place_id')
+        place = places.objects.get(pk=place_id)
         fname = request.POST.get('name')
         from_email = request.POST.get('email')
         date_str = request.POST.get('date')
@@ -42,7 +49,7 @@ def book(request):
             return render(request, 'book.html')
 
         # Check for overlapping bookings
-        overlapping_bookings = Event.objects.filter(date=date, start_time__lt=end_datetime, end_time__gt=start_datetime)
+        overlapping_bookings = Event.objects.filter(place=place,date=date, start_time__lt=end_datetime, end_time__gt=start_datetime)
         if overlapping_bookings.exists():
             email = EmailMessage(
                 subject=f'{fname}  Slot already booked for this time',
@@ -79,6 +86,8 @@ def book(request):
             messages.error(request, "Invalid email address")
     
     return render(request, 'book.html')
+
+
 def event(request):
     events = Event.objects.all().order_by('start_time')
     
