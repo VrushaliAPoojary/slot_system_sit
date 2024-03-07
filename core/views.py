@@ -64,7 +64,7 @@ def bookslot(request):
         if overlapping_bookings.exists():
             email = EmailMessage(
                 subject=f'Slot already booked for this time',
-                body=f'Here is the message. {fname} {from_email}',
+                body=f'We are sorry,it seems that the {date} and {start_datetime} you have entered for your event are already booked. Please select a different time or date, or contact us for further assistance. Thank you for your understanding. ',
                 from_email=settings.EMAIL_HOST_USER,
                 to=[from_email],
                 cc=[],
@@ -77,7 +77,7 @@ def bookslot(request):
             query.save()
             email = EmailMessage(
                 subject=f'{fname}',
-                body=f'Here is the message. {fname} {from_email}',
+                body=f'This is to inform you that an event has been booked by {fname}, email {from_email}on the following {date} and {start_datetime}. ',
                 from_email=settings.EMAIL_HOST_USER,
                 to=['snapship43@gmail.com'],
                 cc=[],
@@ -86,7 +86,7 @@ def bookslot(request):
             email.send()
             touseremail = EmailMessage(
                 subject=f'{fname}',
-                body=f'your slot is booked  {fname} {from_email}',
+                body=f'Your booking is confirmed, and we look forward to welcoming you at the event. If you have any questions or need further assistance, feel free to reach out to us. Thank you for choosing us, and we hope you have a fantastic experience!',
                 from_email=settings.EMAIL_HOST_USER,
                 to=[from_email],
                 cc=[],
