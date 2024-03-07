@@ -20,7 +20,7 @@ def contact(request):
     from_feedback=request.POST.get('feedback')
     if re.match(r'^[\w\.-]+@[\w\.-]+$', from_email):
             touseremail = EmailMessage(
-                subject=f'Feedback from {fname}',
+                subject=f'You have received feedback from {fname} on SIT_SLOT',
                 body=f'{from_feedback}',
                 from_email=settings.EMAIL_HOST_USER,
                 to=['prathampshetty99@gmail.com'],
