@@ -9,6 +9,7 @@ urlpatterns = [
     path('index',views.index, name='index'),
     path('event',views.event),
     path('contact',views.contact),
-    path('book',views.book,name='book'),
+    path('book/<int:place_id>/',views.book,name='book'),
+    path('bookslot/',views.bookslot,name='bookslot'),
     path('success',views.success,name="success"),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
