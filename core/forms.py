@@ -1,4 +1,4 @@
-#from django import forms
+#from djan
 #from .models import Event
 
 #class ImageForm(forms.ModelForm):
