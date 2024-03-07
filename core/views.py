@@ -15,6 +15,17 @@ def index(request):
     return render(request, 'index.html',{'place': place})
 
 def contact(request):
+    fname = request.POST.get('name')
+    from_email = request.POST.get('email')
+    from_feedback=request.POST.get('feedback')
+    if re.match(r'^[\w\.-]+@[\w\.-]+$', from_email):
+            touseremail = EmailMessage(
+                subject=f'Feedback from {fname}',
+                body=f'{from_feedback}',
+                from_email=settings.EMAIL_HOST_USER,
+                to=['prathampshetty99@gmail.com'],
+                cc=[],
+            ).send()
     return render(request, 'contact.html')
 
 def success(request):
@@ -52,7 +63,7 @@ def bookslot(request):
         overlapping_bookings = Event.objects.filter(place=place,date=date, start_time__lt=end_datetime, end_time__gt=start_datetime)
         if overlapping_bookings.exists():
             email = EmailMessage(
-                subject=f'{fname}  Slot already booked for this time',
+                subject=f'Slot already booked for this time',
                 body=f'Here is the message. {fname} {from_email}',
                 from_email=settings.EMAIL_HOST_USER,
                 to=[from_email],
