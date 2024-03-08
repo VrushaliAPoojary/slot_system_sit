@@ -11,6 +11,7 @@
         <div class="col-lg-6 text-center">
           <h2>Welcome to<span>SIT_SLOT</span></h2>
           <p> our College Hall Slot Booking page! This platform offers a quick and easy way to reserve halls for your events. With just a few clicks, you can access available spaces, amenities, and scheduling options. Simplify your event planning process and book with ease!</p>
+          <a href="{% url 'book' %}" class="btn-get-started">book</a>
           <a href="event" class="btn-get-started">Upcoming events</a>
         </div>
       </div>
@@ -27,7 +28,7 @@
               <img src="{{ i.images.url }}" class="img-fluid" alt="">
               <div class="gallery-links d-flex align-items-center justify-content-center">
                 <a href="{{ i.images.url }}" title="Gallery 1" class="glightbox preview-link"><i class="bi bi-arrows-angle-expand"></i></a>
-                <a href="{% url 'book' place_id=i.id %}" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                <a href=" " class="details-link"><i class="bi bi-link-45deg"></i></a>
               </div>
             </div>
           </div>

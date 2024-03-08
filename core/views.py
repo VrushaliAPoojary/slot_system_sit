@@ -6,42 +6,32 @@ from django.conf import settings
 import re
 from .models import Event, places
 from datetime import datetime, timedelta
-from django.core.paginator import Paginator
 from django.utils import timezone
-
+from django.shortcuts import get_object_or_404
 
 def index(request):
-    place = places.objects.all().order_by('id')
-    return render(request, 'index.html',{'place': place})
+    places_queryset = places.objects.all().order_by('id')
+    return render(request, 'index.html', {'place': places_queryset})
 
 def contact(request):
     if request.method == 'POST':
         from_email = request.POST.get('from_email')
-        if from_email is not None:  # Check if from_email is not None
+        if from_email is not None:  
             if re.match(r'^[\w\.-]+@[\w\.-]+$', from_email):
-                # Valid email address, proceed with your logic
                 return HttpResponse('Email is valid.')
             else:
-                # Invalid email address, handle the error
                 return HttpResponse('Invalid email address.')
         else:
-            # Handle the case where from_email is None
             return HttpResponse('Please provide an email address.')
     else:
-        # Handle GET request (if needed)
         return render(request, 'contact.html') 
 
 def success(request):
     return render(request, 'event.html')
 
-def book(request, place_id):
-    place_id = place_id
-    return render(request, 'book.html',{'place_id':place_id})
-
-def bookslot(request): 
+def book(request):
     if request.method == 'POST':
-        place_id = request.Post.get('place_id')
-        place = places.objects.get(pk=place_id)
+        place_id = request.POST.get('place')
         fname = request.POST.get('name')
         from_email = request.POST.get('email')
         date_str = request.POST.get('date')
@@ -49,21 +39,20 @@ def bookslot(request):
         duration = int(request.POST.get('duration'))  
         img = request.FILES.get('photo')
         
-       
+        place = places.objects.get(id=place_id)
+        
         date = datetime.strptime(date_str, '%Y-%m-%d').date()
         time = datetime.strptime(time_str, '%H:%M').time()
         
-        # Calculate end time based on start time and duration
         start_datetime = timezone.make_aware(datetime.combine(date, time))
         end_datetime = start_datetime + timedelta(hours=duration)
         
-        # Check if start time is before end time
         if start_datetime >= end_datetime:
             messages.error(request, "End time should be after start time")
-            return render(request, 'book.html')
+            all_places = places.objects.all().order_by('id')
+            return render(request, 'book.html', {'place': all_places})
 
-        # Check for overlapping bookings
-        overlapping_bookings = Event.objects.filter(place=place,date=date, start_time__lt=end_datetime, end_time__gt=start_datetime)
+        overlapping_bookings = Event.objects.filter(place=place, date=date, start_time__lt=end_datetime, end_time__gt=start_datetime)
         if overlapping_bookings.exists():
             email = EmailMessage(
                 subject=f'Slot already booked for this time',
@@ -71,16 +60,16 @@ def bookslot(request):
                 from_email=settings.EMAIL_HOST_USER,
                 to=[from_email],
                 cc=[],
-            ).send()
-            return redirect('book')
+            )
+            email.send()
+            all_places = places.objects.all().order_by('id')
+            return render(request, 'book.html', {'place': all_places})
 
-        # Send email and save booking if everything is valid
         if re.match(r'^[\w\.-]+@[\w\.-]+$', from_email):
-            query = Event(name=fname, email=from_email, date=date, start_time=start_datetime, end_time=end_datetime, image=img)
-            query.save()
+            event = Event.objects.create(name=fname, email=from_email, date=date, start_time=start_datetime, end_time=end_datetime, image=img, place=place)
             email = EmailMessage(
                 subject=f'{fname}',
-                body=f'This is to inform you that an event has been booked by {fname}, email {from_email}on the following {date} and {start_datetime}. ',
+                body=f'This is to inform you that an event has been booked by {fname}, email {from_email} on the following {date} and {start_datetime}. ',
                 from_email=settings.EMAIL_HOST_USER,
                 to=['snapship43@gmail.com'],
                 cc=[],
@@ -93,14 +82,16 @@ def bookslot(request):
                 from_email=settings.EMAIL_HOST_USER,
                 to=[from_email],
                 cc=[],
-            ).send()
-          
+            )
+            touseremail.send()
             return redirect('event') 
         else:
             messages.error(request, "Invalid email address")
+            all_places = places.objects.all().order_by('id')
+            return render(request, 'book.html', {'place': all_places})
     else:
-        return render(request, 'book.html')
-
+        all_places = places.objects.all().order_by('id') 
+        return render(request, 'book.html', {'place': all_places})
 
 def event(request):
     events = Event.objects.all().order_by('start_time')
@@ -118,6 +109,3 @@ def event(request):
             event.delete()
             
     return render(request, 'event.html', {'events': future_events})
-   
-   
-    
