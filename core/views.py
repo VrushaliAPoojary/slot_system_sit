@@ -15,18 +15,21 @@ def index(request):
     return render(request, 'index.html',{'place': place})
 
 def contact(request):
-    fname = request.POST.get('name')
-    from_email = request.POST.get('email')
-    from_feedback=request.POST.get('feedback')
-    if re.match(r'^[\w\.-]+@[\w\.-]+$', from_email):
-            touseremail = EmailMessage(
-                subject=f'You have received feedback from {fname} on SIT_SLOT',
-                body=f'{from_feedback}',
-                from_email=settings.EMAIL_HOST_USER,
-                to=['prathampshetty99@gmail.com'],
-                cc=[],
-            ).send()
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        from_email = request.POST.get('from_email')
+        if from_email is not None:  # Check if from_email is not None
+            if re.match(r'^[\w\.-]+@[\w\.-]+$', from_email):
+                # Valid email address, proceed with your logic
+                return HttpResponse('Email is valid.')
+            else:
+                # Invalid email address, handle the error
+                return HttpResponse('Invalid email address.')
+        else:
+            # Handle the case where from_email is None
+            return HttpResponse('Please provide an email address.')
+    else:
+        # Handle GET request (if needed)
+        return render(request, 'contact.html') 
 
 def success(request):
     return render(request, 'event.html')
@@ -95,8 +98,8 @@ def bookslot(request):
             return redirect('event') 
         else:
             messages.error(request, "Invalid email address")
-    
-    return render(request, 'book.html')
+    else:
+        return render(request, 'book.html')
 
 
 def event(request):
